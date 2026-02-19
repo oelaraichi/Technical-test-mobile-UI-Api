@@ -1,8 +1,8 @@
-import { $, driver } from '@wdio/globals'
-import SearchPage from './search.page'
+﻿import { $, driver } from '@wdio/globals'
 
 const APP_ID = 'org.wikipedia.alpha:id'
 const APP_PACKAGE = 'org.wikipedia.alpha'
+
 const id = (name: string) => `id:${APP_ID}/${name}`
 const ui = (query: string) => `android=new UiSelector().${query}`
 
@@ -35,7 +35,7 @@ class ArticlePage {
 
   private get frenchLanguageSelectors() {
     return [
-      ui('textMatches("(?i)^french$|^francais$|^français$|.*french.*|.*fran.*")'),
+      ui('textMatches("(?i)^french$|^francais$|^fran\\u00e7ais$|.*french.*|.*fran.*")'),
       ui('textContains("French")'),
       ui('descriptionMatches("(?i).*french.*|.*fran.*|.*francais.*")'),
       ui('resourceIdMatches(".*wiki_language_title").textMatches("(?i).*french.*|.*fran.*")'),
@@ -48,12 +48,12 @@ class ArticlePage {
       let dismissed = false
 
       if (await this.gamesPopupClose.isDisplayed().catch(() => false)) {
-        await this.gamesPopupClose.click()
+        await this.gamesPopupClose.click().catch(() => {})
         dismissed = true
       }
 
       if (await this.toolbarGotIt.isDisplayed().catch(() => false)) {
-        await this.toolbarGotIt.click()
+        await this.toolbarGotIt.click().catch(() => {})
         dismissed = true
       }
 
@@ -78,15 +78,42 @@ class ArticlePage {
     await driver.pause(600)
   }
 
+  async scrollToBottom() {
+    for (let i = 0; i < 18; i++) {
+      await this.scrollDown()
+    }
+  }
+
+  async openLink(linkText: string) {
+    await this.ensureAppInForeground()
+    await this.dismissPopupIfPresent()
+
+    if (await this.openLinkFromPage(linkText, 24)) return
+    if (await this.openLinkViaUiScrollable(linkText)) return
+
+    const pkg = await driver.getCurrentPackage().catch(() => 'n/a')
+    const act = await driver.getCurrentActivity().catch(() => 'n/a')
+    throw new Error(`Link "${linkText}" not found. Current=${pkg}/${act}`)
+  }
+
+  async isTitleVisible(title: string) {
+    const selectors = this.buildLinkSelectors(title)
+
+    for (const selector of selectors) {
+      const el = $(selector)
+      if (await el.isDisplayed().catch(() => false)) return true
+    }
+
+    return false
+  }
+
   private async openLanguagePicker() {
     if (await this.tapFirstVisible(this.languageEntrySelectors, 5000)) return true
 
     const openedOverflow = await this.tapFirstVisible(this.overflowMenuSelectors, 3000)
     if (!openedOverflow) return false
 
-    if (await this.tapFirstVisible(this.languageEntrySelectors, 5000)) return true
-
-    return false
+    return this.tapFirstVisible(this.languageEntrySelectors, 5000)
   }
 
   private async selectFrenchLanguage() {
@@ -96,8 +123,8 @@ class ArticlePage {
     if (await this.tapWithScroll(this.frenchLanguageSelectors, 24)) return
 
     for (const term of ['fr', 'french', 'francais']) {
-      const searchReady = await this.typeLanguageSearch(term)
-      if (!searchReady) continue
+      const ready = await this.typeLanguageSearch(term)
+      if (!ready) continue
       if (await this.tapWithScroll(this.frenchLanguageSelectors, 16)) return
     }
 
@@ -147,6 +174,7 @@ class ArticlePage {
       if (await this.tapFirstVisible(selectors, 1200)) return true
       if (i < maxScrolls) await this.scrollDown()
     }
+
     return false
   }
 
@@ -166,39 +194,27 @@ class ArticlePage {
     }
   }
 
-  async scrollToBottom() {
-    for (let i = 0; i < 18; i++) {
+  private async openLinkFromPage(linkText: string, maxScrolls: number) {
+    const selectors = [
+      ...this.buildRelatedCardSelectors(linkText),
+      ...this.buildLinkSelectors(linkText),
+    ]
+
+    for (let i = 0; i <= maxScrolls; i++) {
+      const target = await this.findFirstVisible(selectors)
+      if (target) {
+        await target.click()
+        await driver.pause(700)
+        return true
+      }
+
+      if (i === maxScrolls) break
+
       await this.scrollDown()
-    }
-  }
-
-  async openLink(linkText: string) {
-    await this.ensureAppInForeground()
-    await this.dismissPopupIfPresent()
-    const selectors = this.buildLinkSelectors(linkText)
-
-    const link = await this.findFirstVisible(selectors)
-    if (link) {
-      await link.click()
-      await driver.pause(700)
-      return
+      await this.dismissPopupIfPresent()
+      await driver.pause(150)
     }
 
-    if (await this.openLinkViaUiScrollable(linkText)) return
-    if (await this.openViaGlobalSearch(linkText)) return
-    if (await this.openViaArticleSearch(linkText)) return
-
-    const pkg = await driver.getCurrentPackage().catch(() => 'n/a')
-    const act = await driver.getCurrentActivity().catch(() => 'n/a')
-    throw new Error(`Link "${linkText}" not found. Current=${pkg}/${act}`)
-  }
-
-  async isTitleVisible(title: string) {
-    const selectors = this.buildLinkSelectors(title)
-    for (const selector of selectors) {
-      const el = $(selector)
-      if (await el.isDisplayed().catch(() => false)) return true
-    }
     return false
   }
 
@@ -208,8 +224,8 @@ class ArticlePage {
     if (normalized.includes('cresus') || normalized.includes('croesus')) {
       return [
         ui('textMatches("(?i).*cr.sus.*|.*croesus.*|.*kr.sus.*")'),
-        ui('textContains("Cr\u00e9sus")'),
-        ui('textContains("Cr\u00e9sus de Lydie")'),
+        ui('textContains("Cr\\u00e9sus")'),
+        ui('textContains("Cr\\u00e9sus de Lydie")'),
         ui('textContains("Croesus")'),
         ui('textContains("Cresus")'),
       ]
@@ -225,8 +241,19 @@ class ArticlePage {
     return [ui(`textContains("${clean}")`), ui(`textContains("${repaired}")`)]
   }
 
+  private buildRelatedCardSelectors(raw: string) {
+    const normalized = this.normalizeText(raw).toLowerCase()
+    if (!(normalized.includes('cresus') || normalized.includes('croesus'))) return []
+
+    return [
+      ui('resourceIdMatches(".*page_list_item_description").textMatches("(?i).*ancien.*anatol.*|.*anatolian.*kingdom.*")'),
+      ui('resourceIdMatches(".*page_list_item_title").textMatches("(?i).*cr[e\\u00e9]sus.*|.*croesus.*")'),
+    ]
+  }
+
   private buildLinkSearchTerms(raw: string) {
     const normalized = this.normalizeText(raw).toLowerCase()
+
     if (normalized.includes('cresus') || normalized.includes('croesus')) {
       return ['Crésus', 'Cresus', 'Croesus', 'Crésus de Lydie']
     }
@@ -249,12 +276,14 @@ class ArticlePage {
       const element = $(selector)
       if (await element.isDisplayed().catch(() => false)) return element
     }
+
     return null
   }
 
   private async tapIfVisible(selector: string) {
     const el = $(selector)
     if (!(await el.isDisplayed().catch(() => false))) return false
+
     await el.click().catch(() => {})
     await driver.pause(250)
     return true
@@ -262,6 +291,7 @@ class ArticlePage {
 
   private async tapFirstVisible(selectors: string[], timeout = 3000) {
     const end = Date.now() + timeout
+
     while (Date.now() < end) {
       const target = await this.findFirstVisible(selectors)
       if (target) {
@@ -269,8 +299,10 @@ class ArticlePage {
         await driver.pause(300)
         return true
       }
+
       await driver.pause(250)
     }
+
     return false
   }
 
@@ -317,97 +349,13 @@ class ArticlePage {
       try {
         const target = $(selector)
         if (!(await target.isDisplayed().catch(() => false))) continue
+
         await target.click()
         await driver.pause(700)
         return true
       } catch {
         continue
       }
-    }
-
-    return false
-  }
-
-  private async openViaArticleSearch(linkText: string) {
-    await this.ensureAppInForeground()
-    const openSearch = await this.tapFirstVisible(
-      [
-        id('menu_page_search'),
-        id('menu_search_in_article'),
-        ui('descriptionMatches("(?i).*search.*|.*rechercher.*")'),
-      ],
-      5000
-    )
-
-    if (!openSearch) return false
-
-    const searchField = await this.findFirstVisible([
-      id('search_src_text'),
-      ui('resourceIdMatches(".*search_src_text")'),
-      ui('className("android.widget.EditText")'),
-      ui('className("android.widget.AutoCompleteTextView")'),
-    ])
-
-    if (!searchField) return false
-
-    const candidates = this.buildLinkSearchTerms(linkText)
-
-    for (const candidate of candidates) {
-      await searchField.click().catch(() => {})
-      await searchField.clearValue().catch(() => {})
-      await searchField.setValue(candidate)
-      await driver.pause(900)
-
-      const result = await this.findFirstVisible(this.buildLinkSelectors(linkText))
-      if (result) {
-        await result.click()
-        await driver.pause(700)
-        return true
-      }
-    }
-
-    await driver.back().catch(() => {})
-    await driver.pause(250)
-    return false
-  }
-
-  private async openViaGlobalSearch(linkText: string) {
-    await this.ensureAppInForeground()
-    const queries = this.buildLinkSearchTerms(linkText)
-
-    for (let i = 0; i < 3; i++) {
-      const activity = await driver.getCurrentActivity().catch(() => '')
-      if (!/SearchActivity/i.test(activity)) break
-      await driver.back().catch(() => {})
-      await driver.pause(250)
-    }
-
-    for (const query of queries) {
-      try {
-        await SearchPage.search(query)
-      } catch {
-        continue
-      }
-
-      try {
-        await SearchPage.openFirstResult()
-        await driver.pause(700)
-        return true
-      } catch {}
-
-      try {
-        await SearchPage.openFirstExactResult(query)
-        await driver.pause(700)
-        return true
-      } catch {}
-
-      const direct = await this.findFirstVisible([...this.buildLinkSelectors(linkText)])
-
-      if (!direct) continue
-
-      await direct.click()
-      await driver.pause(700)
-      return true
     }
 
     return false

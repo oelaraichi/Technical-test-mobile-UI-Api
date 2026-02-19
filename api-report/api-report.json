@@ -1,0 +1,125 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2026-02-19T21:37:37.649Z",
+    "end": "2026-02-19T21:37:37.992Z",
+    "duration": 343,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "3e319015-4eb2-42fd-88b7-9f182e77cc1c",
+      "title": "",
+      "fullFile": "C:\\Projects\\mobile-automation-lydia\\api-tests\\users.api.spec.ts",
+      "file": "\\api-tests\\users.api.spec.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "4e2e326a-8598-4908-b7d5-fcf688508cd6",
+          "title": "API - Users",
+          "fullFile": "C:\\Projects\\mobile-automation-lydia\\api-tests\\users.api.spec.ts",
+          "file": "\\api-tests\\users.api.spec.ts",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "GET /users/1 should fetch a user",
+              "fullTitle": "API - Users GET /users/1 should fetch a user",
+              "timedOut": false,
+              "duration": 68,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const response = await axios_1.default.get(`${API_BASE_URL}/users/1`);\n(0, chai_1.expect)(response.status).to.equal(200);\n(0, chai_1.expect)(response.data).to.be.an('object');\n(0, chai_1.expect)(response.data).to.include.keys('id', 'name', 'username', 'email');\n(0, chai_1.expect)(response.data.id).to.equal(1);",
+              "err": {},
+              "uuid": "e2492856-6430-4207-8b87-24ef4ce3cac3",
+              "parentUUID": "4e2e326a-8598-4908-b7d5-fcf688508cd6",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "POST /users should create a user",
+              "fullTitle": "API - Users POST /users should create a user",
+              "timedOut": false,
+              "duration": 271,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const payload = {\n    name: 'QA Manager',\n    username: 'qa.manager',\n    email: 'qa.manager@example.com',\n};\nconst response = await axios_1.default.post(`${API_BASE_URL}/users`, payload);\n(0, chai_1.expect)(response.status).to.equal(201);\n(0, chai_1.expect)(response.data).to.be.an('object');\n(0, chai_1.expect)(response.data).to.include({\n    name: payload.name,\n    username: payload.username,\n    email: payload.email,\n});\n(0, chai_1.expect)(response.data).to.have.property('id');",
+              "err": {},
+              "uuid": "733d3e61-a52a-4f07-9b2b-84e603064d64",
+              "parentUUID": "4e2e326a-8598-4908-b7d5-fcf688508cd6",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "e2492856-6430-4207-8b87-24ef4ce3cac3",
+            "733d3e61-a52a-4f07-9b2b-84e603064d64"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 339,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 30000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "11.7.5"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": true,
+        "reportFilename": "api-report",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "api-report",
+        "reportFilename": "api-report",
+        "quiet": "true",
+        "html": "true",
+        "json": "true"
+      },
+      "version": "6.3.2"
+    }
+  }
+}

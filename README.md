@@ -1,77 +1,72 @@
-# Mobile Automation Lydia
+﻿# Technical Test - Mobile UI + API
 
-Petit projet de test mobile Android avec:
-- WebdriverIO (WDIO)
-- Appium
-- Cucumber (Gherkin)
-- Allure Report
+Projet d'automatisation UI + API en TypeScript.
 
-## Pourquoi WDIO ?
-- Simple a lire et a maintenir.
-- Tres bon support Appium + Cucumber.
-- Configuration claire en TypeScript.
-- Ecosysteme mature (reporting, services, hooks).
+## Stack
+- UI: WebdriverIO + Appium + Cucumber (Gherkin) + Allure
+- API: Mocha + Axios + Chai + Mochawesome
+
+## Pourquoi WDIO pour l'UI
+- Syntaxe simple et lisible avec POM + Gherkin.
+- Tres bonne integration Appium pour Android.
+- Reporting Allure facile a generer en HTML.
 
 ## Prerequis
-- Node.js 20+ (ou 18+)
+- Node.js 18+
+- npm
 - Java JDK 11+
 - Android Studio (SDK + emulator)
-- ADB dans le PATH
+- ADB dans le `PATH`
 
-Verification rapide:
-bash
-node: v24.13.1 
-npm: 11.8.0 
-java: 11.0.29 
-adb: emulator-5554 device 
-
-## Installation depuis zero
-1. Cloner le projet puis entrer dans le dossier:
-bash
-git clone <url-du-repo>
-cd mobile-automation-lydia
-```
-
-2. Installer les dependances:
+Exemple de verification locale:
 ```bash
-npm install
-```
-
-3. Lancer un emulator Android et verifier qu il est visible:
-```bash
+node -v
+npm -v
+java -version
 adb devices
 ```
 
-## Configuration importante
-- APK utilise: `app/app-alpha-universal-release.apk`
-- Config WDIO: `wdio.conf.ts`
-- Feature principale: `features/wikipedia_lydia.feature`
-
-Si votre emulator n est pas `emulator-5554`, adaptez `appium:udid` dans `wdio.conf.ts`.
-
-## Lancer les tests
+## Installation
 ```bash
-npm run test:ui
+git clone https://github.com/oelaraichi/Technical-test-mobile-UI-Api.git
+cd Technical-test-mobile-UI-Api
+npm install
 ```
 
-## Allure Report
-Generer le report:
+## Structure
+- UI feature: `features/wikipedia_lydia.feature`
+- Page Objects UI: `features/pageobjects/`
+- Steps Gherkin: `features/step-definitions/`
+- Config WDIO: `wdio.conf.ts`
+- APK: `app/app-alpha-universal-release.apk`
+- API tests: `api-tests/users.api.spec.ts`
+
+## Lancer les tests UI (scenario demande)
+```bash
+npx wdio run wdio.conf.ts --spec .\features\wikipedia_lydia.feature
+```
+
+## Rapport HTML UI (Allure)
 ```bash
 npm run allure:generate
-```
-
-Ouvrir le report:
-```bash
 npm run allure:open
 ```
+Rapport genere: `allure-report/index.html`
 
-Faire les 2 en une commande:
+## Lancer les tests API
 ```bash
-npm run allure:report
+npm run test:api
+```
+Rapport genere: `api-report/api-report.html`
+
+## Lancer UI + API + generation des rapports
+```bash
+npm run reports:generate
 ```
 
-## Workflow conseille
-1. Demarrer emulator
-2. `npm run test:ui`
-3. `npm run allure:report`
-
+## Notes
+- Si l'emulator n'est pas `emulator-5554`, adaptez `appium:udid` dans `wdio.conf.ts`.
+- Base URL API modifiable avec:
+```bash
+set API_BASE_URL=https://jsonplaceholder.typicode.com
+```

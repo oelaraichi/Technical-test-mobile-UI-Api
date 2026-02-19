@@ -3,5 +3,4 @@ allure-results/
 reports/
 api/reports/
 .env
-allure-report/
 wdio-run*.log
