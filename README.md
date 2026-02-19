@@ -39,6 +39,10 @@ cd Technical-test-mobile-UI-Api
 npm install
 ```
 
+## Acces direct aux rapports (sans installation)
+- UI report (Allure): `https://cdn.jsdelivr.net/gh/oelaraichi/Technical-test-mobile-UI-Api@main/allure-report/index.html`
+- API report (Mochawesome): `https://cdn.jsdelivr.net/gh/oelaraichi/Technical-test-mobile-UI-Api@main/api-report/api-report.html`
+
 ## Structure
 - UI feature: `features/wikipedia_lydia.feature`
 - UI steps: `features/step-definitions/`
