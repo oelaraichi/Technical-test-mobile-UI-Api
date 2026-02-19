@@ -40,8 +40,8 @@ npm install
 ```
 
 ## Acces direct aux rapports (sans installation)
-- UI report (Allure): `https://cdn.jsdelivr.net/gh/oelaraichi/Technical-test-mobile-UI-Api@main/allure-report/index.html`
-- API report (Mochawesome): `https://cdn.jsdelivr.net/gh/oelaraichi/Technical-test-mobile-UI-Api@main/api-report/api-report.html`
+- UI report (Allure): `https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/main/allure-report/index.html`
+- API report (Mochawesome): `https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/main/api-report/api-report.html`
 
 ## Structure
 - UI feature: `features/wikipedia_lydia.feature`
