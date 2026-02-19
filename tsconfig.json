@@ -9,6 +9,7 @@
         ],
         "types": [
             "node",
+            "mocha",
             "@wdio/globals/types",
             "expect-webdriverio",
             "@wdio/cucumber-framework",
@@ -27,6 +28,7 @@
     },
     "include": [
         "test",
+        "api-tests",
         "wdio.conf.ts",
         "features"
     ]

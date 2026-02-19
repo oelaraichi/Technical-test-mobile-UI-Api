@@ -1,6 +1,5 @@
 ﻿node_modules/
 allure-results/
 reports/
-api/reports/
 .env
 wdio-run*.log
