@@ -1,16 +1,16 @@
 {
   "stats": {
-    "suites": 1,
-    "tests": 2,
-    "passes": 2,
-    "pending": 0,
+    "suites": 2,
+    "tests": 3,
+    "passes": 1,
+    "pending": 2,
     "failures": 0,
-    "start": "2026-02-19T21:37:37.649Z",
-    "end": "2026-02-19T21:37:37.992Z",
-    "duration": 343,
-    "testsRegistered": 2,
+    "start": "2026-02-19T21:40:29.894Z",
+    "end": "2026-02-19T21:40:29.970Z",
+    "duration": 76,
+    "testsRegistered": 3,
     "passPercent": 100,
-    "pendingPercent": 0,
+    "pendingPercent": 66.66666666666666,
     "other": 0,
     "hasOther": false,
     "skipped": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "3e319015-4eb2-42fd-88b7-9f182e77cc1c",
+      "uuid": "55710511-ad46-4e60-b3a4-d65879880a20",
       "title": "",
       "fullFile": "C:\\Projects\\mobile-automation-lydia\\api-tests\\users.api.spec.ts",
       "file": "\\api-tests\\users.api.spec.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "4e2e326a-8598-4908-b7d5-fcf688508cd6",
+          "uuid": "6347e190-3d8d-4b8b-88ca-0f1c704c9edd",
           "title": "API - Users",
           "fullFile": "C:\\Projects\\mobile-automation-lydia\\api-tests\\users.api.spec.ts",
           "file": "\\api-tests\\users.api.spec.ts",
@@ -35,51 +35,110 @@
           "afterHooks": [],
           "tests": [
             {
-              "title": "GET /users/1 should fetch a user",
-              "fullTitle": "API - Users GET /users/1 should fetch a user",
+              "title": "GET /api/users should require x-api-key",
+              "fullTitle": "API - Users GET /api/users should require x-api-key",
               "timedOut": false,
-              "duration": 68,
+              "duration": 73,
               "state": "passed",
               "speed": "medium",
               "pass": true,
               "fail": false,
               "pending": false,
               "context": null,
-              "code": "const response = await axios_1.default.get(`${API_BASE_URL}/users/1`);\n(0, chai_1.expect)(response.status).to.equal(200);\n(0, chai_1.expect)(response.data).to.be.an('object');\n(0, chai_1.expect)(response.data).to.include.keys('id', 'name', 'username', 'email');\n(0, chai_1.expect)(response.data.id).to.equal(1);",
+              "code": "try {\n    await axios_1.default.get(`${API_BASE_URL}/api/users?page=2`);\n    throw new Error('Expected 401 but request succeeded');\n}\ncatch (error) {\n    const status = error.response?.status;\n    (0, chai_1.expect)([401, 403]).to.include(status);\n    // 401: Reqres JSON auth error. 403: Cloudflare block page in some environments.\n    if (status === 401) {\n        (0, chai_1.expect)(error.response?.data).to.be.an('object');\n        (0, chai_1.expect)(error.response?.data).to.include.keys('error', 'message');\n        (0, chai_1.expect)(String(error.response?.data?.error || '')).to.match(/missing_api_key|invalid_key/i);\n    }\n}",
               "err": {},
-              "uuid": "e2492856-6430-4207-8b87-24ef4ce3cac3",
-              "parentUUID": "4e2e326a-8598-4908-b7d5-fcf688508cd6",
-              "isHook": false,
-              "skipped": false
-            },
-            {
-              "title": "POST /users should create a user",
-              "fullTitle": "API - Users POST /users should create a user",
-              "timedOut": false,
-              "duration": 271,
-              "state": "passed",
-              "speed": "slow",
-              "pass": true,
-              "fail": false,
-              "pending": false,
-              "context": null,
-              "code": "const payload = {\n    name: 'QA Manager',\n    username: 'qa.manager',\n    email: 'qa.manager@example.com',\n};\nconst response = await axios_1.default.post(`${API_BASE_URL}/users`, payload);\n(0, chai_1.expect)(response.status).to.equal(201);\n(0, chai_1.expect)(response.data).to.be.an('object');\n(0, chai_1.expect)(response.data).to.include({\n    name: payload.name,\n    username: payload.username,\n    email: payload.email,\n});\n(0, chai_1.expect)(response.data).to.have.property('id');",
-              "err": {},
-              "uuid": "733d3e61-a52a-4f07-9b2b-84e603064d64",
-              "parentUUID": "4e2e326a-8598-4908-b7d5-fcf688508cd6",
+              "uuid": "d212a9ba-20ce-45ca-86fa-f8092ae6e9ba",
+              "parentUUID": "6347e190-3d8d-4b8b-88ca-0f1c704c9edd",
               "isHook": false,
               "skipped": false
             }
           ],
-          "suites": [],
+          "suites": [
+            {
+              "uuid": "fab8ecb1-88ef-4c31-92f5-583eff390b5d",
+              "title": "Legacy users with valid key",
+              "fullFile": "C:\\Projects\\mobile-automation-lydia\\api-tests\\users.api.spec.ts",
+              "file": "\\api-tests\\users.api.spec.ts",
+              "beforeHooks": [
+                {
+                  "title": "\"before all\" hook in \"Legacy users with valid key\"",
+                  "fullTitle": "API - Users Legacy users with valid key \"before all\" hook in \"Legacy users with valid key\"",
+                  "timedOut": false,
+                  "duration": 0,
+                  "state": null,
+                  "speed": null,
+                  "pass": false,
+                  "fail": false,
+                  "pending": true,
+                  "context": null,
+                  "code": "if (!REQRES_API_KEY)\n    this.skip();",
+                  "err": {},
+                  "uuid": "508e207b-aefa-46c3-8ea0-444baa351dba",
+                  "parentUUID": "fab8ecb1-88ef-4c31-92f5-583eff390b5d",
+                  "isHook": true,
+                  "skipped": false
+                }
+              ],
+              "afterHooks": [],
+              "tests": [
+                {
+                  "title": "GET /api/users?page=2 should fetch legacy users",
+                  "fullTitle": "API - Users Legacy users with valid key GET /api/users?page=2 should fetch legacy users",
+                  "timedOut": false,
+                  "duration": 0,
+                  "state": "pending",
+                  "speed": null,
+                  "pass": false,
+                  "fail": false,
+                  "pending": true,
+                  "context": null,
+                  "code": "const response = await axios_1.default.get(`${API_BASE_URL}/api/users?page=2`, withApiKey);\n(0, chai_1.expect)(response.status).to.equal(200);\n(0, chai_1.expect)(response.data).to.be.an('object');\n(0, chai_1.expect)(response.data).to.include.keys('page', 'per_page', 'total', 'data');\n(0, chai_1.expect)(response.data.page).to.equal(2);\n(0, chai_1.expect)(response.data.data).to.be.an('array').that.is.not.empty;\n(0, chai_1.expect)(response.data.data[0]).to.include.keys('id', 'email', 'first_name', 'last_name', 'avatar');",
+                  "err": {},
+                  "uuid": "582c665e-d5e5-4067-95a8-9cc86bc3de89",
+                  "parentUUID": "fab8ecb1-88ef-4c31-92f5-583eff390b5d",
+                  "isHook": false,
+                  "skipped": false
+                },
+                {
+                  "title": "POST /api/users should create a legacy user",
+                  "fullTitle": "API - Users Legacy users with valid key POST /api/users should create a legacy user",
+                  "timedOut": false,
+                  "duration": 0,
+                  "state": "pending",
+                  "speed": null,
+                  "pass": false,
+                  "fail": false,
+                  "pending": true,
+                  "context": null,
+                  "code": "const payload = {\n    name: 'QA Manager',\n    job: 'automation lead',\n};\nconst response = await axios_1.default.post(`${API_BASE_URL}/api/users`, payload, withApiKey);\n(0, chai_1.expect)(response.status).to.equal(201);\n(0, chai_1.expect)(response.data).to.be.an('object');\n(0, chai_1.expect)(response.data).to.include({\n    name: payload.name,\n    job: payload.job,\n});\n(0, chai_1.expect)(response.data).to.have.property('id');\n(0, chai_1.expect)(response.data).to.have.property('createdAt');",
+                  "err": {},
+                  "uuid": "83dade8f-0efc-4622-90b4-5a7f407c107d",
+                  "parentUUID": "fab8ecb1-88ef-4c31-92f5-583eff390b5d",
+                  "isHook": false,
+                  "skipped": false
+                }
+              ],
+              "suites": [],
+              "passes": [],
+              "failures": [],
+              "pending": [
+                "582c665e-d5e5-4067-95a8-9cc86bc3de89",
+                "83dade8f-0efc-4622-90b4-5a7f407c107d"
+              ],
+              "skipped": [],
+              "duration": 0,
+              "root": false,
+              "rootEmpty": false,
+              "_timeout": 30000
+            }
+          ],
           "passes": [
-            "e2492856-6430-4207-8b87-24ef4ce3cac3",
-            "733d3e61-a52a-4f07-9b2b-84e603064d64"
+            "d212a9ba-20ce-45ca-86fa-f8092ae6e9ba"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 339,
+          "duration": 73,
           "root": false,
           "rootEmpty": false,
           "_timeout": 30000

@@ -68,5 +68,12 @@ npm run reports:generate
 - Si l'emulator n'est pas `emulator-5554`, adaptez `appium:udid` dans `wdio.conf.ts`.
 - Base URL API modifiable avec:
 ```bash
-set API_BASE_URL=https://jsonplaceholder.typicode.com
+set API_BASE_URL=https://reqres.in
 ```
+- Pour les tests API Reqres (legacy), cree une cle API sur:
+`https://app.reqres.in/api-keys`
+- Puis exporte la cle avant de lancer:
+```bash
+set REQRES_API_KEY=VOTRE_CLE
+```
+- Sans cle, le test d'auth passe (controle de protection API) et les tests GET/POST legacy sont marques `pending`.
