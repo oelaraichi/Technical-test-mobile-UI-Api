@@ -112,66 +112,48 @@ jobs:
           name: api-report
           path: artifacts/api-report
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Build static reports website
-        shell: bash
         run: |
-          set -euo pipefail
+          node <<'NODE'
+          const fs = require('fs')
+          const path = require('path')
 
-          mkdir -p site/ui site/api
+          const mkdir = (p) => fs.mkdirSync(p, { recursive: true })
+          const write = (p, c) => fs.writeFileSync(p, c, 'utf8')
+          const exists = (p) => fs.existsSync(p)
 
-          if [ -d artifacts/api-report ] && [ "$(find artifacts/api-report -type f | wc -l)" -gt 0 ]; then
-            cp -R artifacts/api-report/. site/api/
-          else
-            cat > site/api/index.html <<'HTML'
-            <!doctype html>
-            <html lang="en">
-            <head>
-              <meta charset="utf-8" />
-              <title>API Report</title>
-            </head>
-            <body>
-              <h1>API report unavailable</h1>
-              <p>No API report artifact was generated in this workflow run.</p>
-            </body>
-            </html>
-            HTML
-          fi
+          mkdir('site/ui')
+          mkdir('site/api')
 
-          cat > site/ui/index.html <<'HTML'
-          <!doctype html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8" />
-            <meta http-equiv="refresh" content="0; url=https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/05167a8/allure-report/index.html" />
-            <title>UI Report Redirect</title>
-          </head>
-          <body>
-            <p>Redirecting to fallback UI report...</p>
-            <p>If redirect does not start, open <a href="https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/05167a8/allure-report/index.html">this link</a>.</p>
-          </body>
-          </html>
-          HTML
+          const apiSrc = 'artifacts/api-report'
+          if (exists(apiSrc) && fs.readdirSync(apiSrc).length > 0) {
+            fs.cpSync(apiSrc, 'site/api', { recursive: true, force: true })
+          } else {
+            write(
+              'site/api/index.html',
+              '<!doctype html><html lang="en"><head><meta charset="utf-8" /><title>API Report</title></head><body><h1>API report unavailable</h1><p>No API report artifact was generated in this workflow run.</p></body></html>'
+            )
+          }
 
-          if [ ! -f site/api/index.html ] && [ -f site/api/api-report.html ]; then
-            cp site/api/api-report.html site/api/index.html
-          fi
+          write(
+            'site/ui/index.html',
+            '<!doctype html><html lang="en"><head><meta charset="utf-8" /><meta http-equiv="refresh" content="0; url=https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/05167a8/allure-report/index.html" /><title>UI Report Redirect</title></head><body><p>Redirecting to fallback UI report...</p><p>If redirect does not start, open <a href="https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/05167a8/allure-report/index.html">this link</a>.</p></body></html>'
+          )
 
-          cat > site/index.html <<'HTML'
-          <!doctype html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8" />
-            <title>Automation Reports</title>
-          </head>
-          <body>
-            <h1>Automation Reports</h1>
-            <ul>
-              <li><a href="./ui/">UI report (Allure)</a></li>
-              <li><a href="./api/">API report (Mochawesome)</a></li>
-            </ul>
-          </body>
-          </html>
-          HTML
+          if (!exists('site/api/index.html') && exists('site/api/api-report.html')) {
+            fs.copyFileSync('site/api/api-report.html', 'site/api/index.html')
+          }
+
+          write(
+            'site/index.html',
+            '<!doctype html><html lang="en"><head><meta charset="utf-8" /><title>Automation Reports</title></head><body><h1>Automation Reports</h1><ul><li><a href="./ui/">UI report (Allure)</a></li><li><a href="./api/">API report (Mochawesome)</a></li></ul></body></html>'
+          )
+          NODE
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
