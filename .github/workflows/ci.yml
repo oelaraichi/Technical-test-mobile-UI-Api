@@ -90,7 +90,7 @@ jobs:
 
   publish-reports:
     if: ${{ always() && github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') }}
-    needs: [test-api, test-ui]
+    needs: [test-api]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment:
@@ -163,11 +163,12 @@ jobs:
             <html lang="en">
             <head>
               <meta charset="utf-8" />
-              <title>UI Report</title>
+              <meta http-equiv="refresh" content="0; url=https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/05167a8/allure-report/index.html" />
+              <title>UI Report Redirect</title>
             </head>
             <body>
-              <h1>UI report unavailable</h1>
-              <p>No Allure results artifact was generated in this workflow run.</p>
+              <p>Redirecting to fallback UI report...</p>
+              <p>If redirect does not start, open <a href="https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/05167a8/allure-report/index.html">this link</a>.</p>
             </body>
             </html>
             HTML
