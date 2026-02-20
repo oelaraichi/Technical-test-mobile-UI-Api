@@ -39,9 +39,10 @@ cd Technical-test-mobile-UI-Api
 npm install
 ```
 
-## Acces direct aux rapports (sans installation)
-- UI report (Allure): `https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/main/allure-report/index.html`
-- API report (Mochawesome): `https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/main/api-report/api-report.html`
+## Rapports
+- Les rapports UI/API sont des artefacts generes localement ou en CI (GitHub Actions).
+- UI local: `allure-report/index.html`
+- API local: `api-report/api-report.html`
 
 ## Structure
 - UI feature: `features/wikipedia_lydia.feature`

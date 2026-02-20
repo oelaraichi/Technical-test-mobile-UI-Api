@@ -1,6 +1,8 @@
 import * as path from 'node:path'
 
 const allureOutputDir = path.join(process.cwd(), 'allure-results')
+const appPath = process.env.APP_PATH || path.join(process.cwd(), 'app', 'app-alpha-universal-release.apk')
+const androidUdid = process.env.ANDROID_UDID || 'emulator-5554'
 
 export const config: WebdriverIO.Config = {
   runner: 'local',
@@ -16,8 +18,8 @@ export const config: WebdriverIO.Config = {
       platformName: 'Android',
       'appium:automationName': 'UiAutomator2',
       'appium:deviceName': 'Android',
-      'appium:udid': 'emulator-5554',
-      'appium:app': 'C:\\Projects\\mobile-automation-lydia\\app\\app-alpha-universal-release.apk',
+      'appium:udid': androidUdid,
+      'appium:app': appPath,
       'appium:appPackage': 'org.wikipedia.alpha',
       'appium:appActivity': 'org.wikipedia.main.MainActivity',
       'appium:appWaitPackage': 'org.wikipedia.alpha',
