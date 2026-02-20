@@ -41,8 +41,12 @@ npm install
 
 ## Rapports
 - Les rapports UI/API sont des artefacts generes localement ou en CI (GitHub Actions).
+- Sur `main/master`, la CI publie automatiquement une version consultable sur GitHub Pages.
 - UI local: `allure-report/index.html`
 - API local: `api-report/api-report.html`
+- UI en ligne (GitHub Pages): `https://oelaraichi.github.io/Technical-test-mobile-UI-Api/ui/`
+- API en ligne (GitHub Pages): `https://oelaraichi.github.io/Technical-test-mobile-UI-Api/api/`
+- Index en ligne (GitHub Pages): `https://oelaraichi.github.io/Technical-test-mobile-UI-Api/`
 
 ## Structure
 - UI feature: `features/wikipedia_lydia.feature`
@@ -82,6 +86,10 @@ Cle API: `https://app.reqres.in/api-keys`
 ## Rapport HTML API
 Le rapport est genere automatiquement par `npm run test:api`:
 - `api-report/api-report.html`
+
+## Liens de compatibilite (anciens liens partages)
+- UI: `https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/main/allure-report/index.html`
+- API: `https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/main/api-report/api-report.html`
 
 ## Tout lancer en une commande
 ```bash

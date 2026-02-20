@@ -1,7 +1,11 @@
 node_modules/
 allure-results/
-allure-report/
-api-report/
+allure-report/**
+!allure-report/
+!allure-report/index.html
+api-report/**
+!api-report/
+!api-report/api-report.html
 reports/
 .env
 wdio-run*.log
