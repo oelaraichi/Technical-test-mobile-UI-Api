@@ -112,28 +112,6 @@ jobs:
           name: api-report
           path: artifacts/api-report
 
-      - name: Download Allure results artifact
-        uses: actions/download-artifact@v4
-        continue-on-error: true
-        with:
-          name: allure-results
-          path: artifacts/allure-results
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Install dependencies
-        run: npm ci
-
       - name: Build static reports website
         shell: bash
         run: |
@@ -159,24 +137,20 @@ jobs:
             HTML
           fi
 
-          if [ -d artifacts/allure-results ] && [ "$(find artifacts/allure-results -type f | wc -l)" -gt 0 ]; then
-            npx allure generate artifacts/allure-results --clean -o site/ui
-          else
-            cat > site/ui/index.html <<'HTML'
-            <!doctype html>
-            <html lang="en">
-            <head>
-              <meta charset="utf-8" />
-              <meta http-equiv="refresh" content="0; url=https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/05167a8/allure-report/index.html" />
-              <title>UI Report Redirect</title>
-            </head>
-            <body>
-              <p>Redirecting to fallback UI report...</p>
-              <p>If redirect does not start, open <a href="https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/05167a8/allure-report/index.html">this link</a>.</p>
-            </body>
-            </html>
-            HTML
-          fi
+          cat > site/ui/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="refresh" content="0; url=https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/05167a8/allure-report/index.html" />
+            <title>UI Report Redirect</title>
+          </head>
+          <body>
+            <p>Redirecting to fallback UI report...</p>
+            <p>If redirect does not start, open <a href="https://raw.githack.com/oelaraichi/Technical-test-mobile-UI-Api/05167a8/allure-report/index.html">this link</a>.</p>
+          </body>
+          </html>
+          HTML
 
           if [ ! -f site/api/index.html ] && [ -f site/api/api-report.html ]; then
             cp site/api/api-report.html site/api/index.html
